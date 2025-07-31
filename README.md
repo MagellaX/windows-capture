@@ -148,7 +148,62 @@ fn main() {
     // The errors from the handler trait will end up here.
     Capture::start(settings).expect("Screen capture failed");
 }
+
+### Running the Streaming Example
+
+```bash
+# Stream to TCP server
+cargo run --example streaming tcp
+
+# Stream to UDP client
+cargo run --example streaming udp
+
+# Save encoded frames to files
+cargo run --example streaming file
 ```
+
+### Trait-Based Streaming System
+
+The library also provides a more flexible trait-based streaming system that abstracts stream reading and writing:
+
+```rust
+use windows_capture::network::{StreamReader, StreamWriter, StreamManager, EnhancedNetworkCallback};
+
+// The trait system allows for custom stream implementations
+pub trait StreamReader: Send + Sync {
+    fn read(&mut self, buffer: &mut [u8]) -> std::io::Result<usize>;
+    fn is_connected(&self) -> bool;
+    fn stream_id(&self) -> &str;
+}
+
+pub trait StreamWriter: Send + Sync {
+    fn write(&mut self, data: &[u8]) -> std::io::Result<usize>;
+    fn flush(&mut self) -> std::io::Result<()>;
+    fn is_connected(&self) -> bool;
+    fn stream_id(&self) -> &str;
+}
+
+pub trait StreamManager: Send + Sync {
+    fn accept_connection(&mut self) -> std::io::Result<(Box<dyn StreamReader>, Box<dyn StreamWriter>)>;
+    fn close(&mut self) -> std::io::Result<()>;
+    fn manager_id(&self) -> &str;
+}
+```
+
+### Running the Trait-Based Example
+
+```bash
+# Stream using trait-based TCP
+cargo run --example trait_streaming trait-tcp
+
+# Stream using trait-based UDP
+cargo run --example trait_streaming trait-udp
+
+# Save encoded frames to files
+cargo run --example trait_streaming file
+```
+
+### Command Line Arguments
 
 ## Documentation
 

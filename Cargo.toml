@@ -75,5 +75,13 @@ doc-scrape-examples = false
 name = "cli"
 doc-scrape-examples = false
 
+[[example]]
+name = "streaming"
+doc-scrape-examples = false
+
+[[example]]
+name = "trait_streaming"
+doc-scrape-examples = false
+
 [workspace]
 members = ["windows-capture-python"]
